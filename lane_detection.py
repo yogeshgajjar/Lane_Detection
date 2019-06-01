@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
 import cv2
 import numpy as np
 
@@ -12,11 +5,11 @@ import numpy as np
 def canny(image):
 
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-#cv2.cvtColor command changes color of the image. Takes 2 argument where one is the image which we want to change the color and another which changes from RGB2GRAY"""
+#cv2.cvtColor command changes color of the image. Takes 2 argument where one is the image which we want to change the color and another which changes from RGB2GRAY
     blur = cv2.GaussianBlur(gray, (5,5), 0)
 #Using Gaussian Blur to reduce noise in our image"""
     canny = cv2.Canny(blur, 50,150)
-#cv2.Canny(image, low_threshold, high_threshold) If the diference between low threshold and high threshold is high, less edges will be detected"""
+#cv2.canny(image, low_threshold, high_threshold) If the diference between low threshold and high threshold is high, less edges will be detected
     return canny
 
 def display_lines(image, lines):
@@ -41,7 +34,7 @@ def region_of_interest(image):
 
 image = cv2.imread('test_image.jpg')
 lane_image = np.copy(image)
-#THis is needed because any changes made in the arrays of image will lead to changes in the original image. So recommended to always have copy while working with image arrays"""
+#This is needed because any changes made in the arrays of image will lead to changes in the original image. So recommended to always have copy while working with image arrays
 canny = canny(lane_image)
 cropped_image = region_of_interest(canny)
 lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap = 5)
