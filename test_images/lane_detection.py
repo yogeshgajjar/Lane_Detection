@@ -56,8 +56,8 @@ def average_slope_intercept(hough_lines, image):  # FUNCTION FOR CALCULATING THE
             right_fit.append((slope, intercept))
     left_fit_average = np.average(left_fit, axis = 0)
     right_fit_average = np.average(right_fit, axis = 0)
-    left_lane = coordinates(image, left_fit_average)
-    right_lane = coordinates(image, right_fit_average)
+    left_lane = coordinates(image, left_fit_average)  #CONTAINS MATRIX OF AVERAGE VALUES OF HOUGH TRANSFORM LINES OF LEFT LANE
+    right_lane = coordinates(image, right_fit_average) #CONTAINS MATRIX OF AVERAGE VALUES OF HOUGH TRANSFORM LINES OF LEFT LANE
     return np.array([left_lane, right_lane])
 
 original_image = cv2.imread('whiteCarLaneSwitch.jpg')
