@@ -89,5 +89,6 @@ hough_lines = cv2.HoughLinesP(mask_image, 2, np.pi/180, 50, np.array([]), minLin
 average_lines = average_slope_intercept(hough_lines, original_image)
 lane_lines = display_lanes(average_lines, original_image)
 final_image = cv2.addWeighted(original_image, 0.8, lane_lines, 1, 1)
+cv2.imwrite("finalimage.jpg", final_image)
 cv2.imshow("canny", final_image)
 cv2.waitKey(0)
