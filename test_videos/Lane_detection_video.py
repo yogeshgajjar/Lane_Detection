@@ -1,22 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-#
 
-# Converting it into greyscale
-
-# def image_rgb():
-#     #Normal RGB view
-#     image_rgb = cv2.imread('solidWhiteCurve.jpg')
-#     return image_rgb;
-#     # cv2.imshow('img', image_rgb)
-#     # cv2.waitKey(0)
-
-# def image_gray(frame):
-#     image_grey = cv2.imread('whiteCarLaneSwitch.jpg', 0)
-#     return image_grey
-#     #cv2.imshow('img', image_grey)
-#     #cv2.waitKey(0)
 
 def canny(frame):
     image = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -80,22 +65,7 @@ def average_slope_intercept(hough_lines, image):
     print("Right line:", right_line)
     return np.array([left_line, right_line])
 
-# original_image = cv2.imread('whiteCarLaneSwitch.jpg')
-# # plt.imshow(original_image)
-# # plt.show()
-# #cv2.imshow("ori", canny())
-# mask_image = roi()
-# hough_lines = cv2.HoughLinesP(mask_image, 2, np.pi/180, 50, np.array([]), minLineLength=20, maxLineGap=5)
-# average_lines = average_slope_intercept(hough_lines, original_image)
-# lane_lines = display_lanes(average_lines, original_image)
-# final_image = cv2.addWeighted(original_image, 0.8, lane_lines, 1, 1)
-# cv2.imshow("canny", final_image)
-# cv2.waitKey(0)
-
-
-
-
-cap = cv2.VideoCapture("solidYellowLeft.mp4")
+cap = cv2.VideoCapture("solidWhiteRight.mp4")
 while(cap.isOpened()):
     _, frame = cap.read()
     mask_image = roi(frame)
