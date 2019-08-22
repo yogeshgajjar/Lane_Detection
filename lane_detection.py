@@ -1,45 +1,70 @@
+#####################################################################################################################
+#                                       DETECTING LANE LINES ON AN IMAGE
+#####################################################################################################################
+
+
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
+def image_gray():  #FUNCTION FOR GENERATING GRAY IMAGES)
+    image_grey = cv2.imread('whiteCarLaneSwitch.jpg', 0)
+    return image_grey
 
-def canny(image):
+def canny():  # FUNCTION FOR CANNY EDGE DETECTION
+    image = image_gray()
+    blur = cv2.GaussianBlur(image, (5,5), 0) #Reduces noise in our image, makes it blur. (5x5) is the kernel used.
+    canny_blur = cv2.Canny(blur, 50, 150)
+    return canny_blur
 
-    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-#cv2.cvtColor command changes color of the image. Takes 2 argument where one is the image which we want to change the color and another which changes from RGB2GRAY
-    blur = cv2.GaussianBlur(gray, (5,5), 0)
-#Using Gaussian Blur to reduce noise in our image"""
-    canny = cv2.Canny(blur, 50,150)
-#cv2.canny(image, low_threshold, high_threshold) If the diference between low threshold and high threshold is high, less edges will be detected
-    return canny
-
-def display_lines(image, lines):
-    line_image = np.zeros_like(image)
-    if lines is not None:
-        for line in lines:
-            x1,y1,x2,y2 = line.reshape(4)
-            cv2.line(line_image, (x1,y1), (x2,y2), (255,0,0), 10)
-    return line_image
-
-def region_of_interest(image):
+def roi():  # FUNCTION FOR DEFINING REGION OF INTEREST
+    image = canny()
     height = image.shape[0]
-    # the command image.shape gives tuples(no of rows, no of column of a image)
-    #polygons = np.array([[(200,height), (1100, height), (550, 250)]])
-    polygons = np.array([[(140, height), (870, height), (480, 290)]])
-    mask = np.zeros_like(image)
-    #makes matrix full of zeros with the same dimenstions as of image
-    cv2.fillPoly(mask, polygons, 255)
+    polygons = np.array([[(140, height), (910, height), (480, 290)]])  #The dimensions of the region of interest
+    mask = np.zeros_like(image) # creates a mask of the triangle.
+    cv2.fillPoly(mask, polygons, 255) #this overlaps the triangle to the mask created with totally white triangle.
     masked_image = cv2.bitwise_and(image, mask)
     return masked_image
 
+def display_lanes(hough_lines, image):  # FUNCTION FOR DISPLAYING LANE LINES
+    mask_hough = np.zeros_like(image)
+    if hough_lines is not None:
+        for line in hough_lines:
+            x1,y1,x2,y2 = line.reshape(4) # Matrix containing the x & y coordinates of lane lines found using hough transform
+            cv2.line(mask_hough, (x1,y1),(x2,y2), (255, 0, 0), 10)
+    return mask_hough
 
+def coordinates(image, line_parameters):  # FUNCTION FOR FINDING THE COORDINATES OF THE THE AVERAGED LANE LINES
+    slope, intercept = line_parameters
+    y1 = image.shape[0] #this is because we want our image to start in the bottom. which means the entire length of y axis should cover.
+    y2 = int(y1*2.9 /5) + 6
+    x1 = int((y1-intercept)/slope)  # as x = (y-b)/m
+    x2 = int((y2-intercept)/slope)
+    return np.array([x1,y1,x2,y2])
 
-image = cv2.imread('solidWhiteCurve.jpg')
-lane_image = np.copy(image)
-#This is needed because any changes made in the arrays of image will lead to changes in the original image. So recommended to always have copy while working with image arrays
-canny = canny(lane_image)
-cropped_image = region_of_interest(canny)
-lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap = 5)
-line_image = display_lines(lane_image, lines)
-combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
-cv2.imshow('result',combo_image)
+def average_slope_intercept(hough_lines, image):  # FUNCTION FOR CALCULATING THE AVERAGE LANE LINES FROM A SERIES OF LINES
+    left_fit = []  #contains the coordinates of the lines in the left lane lines
+    right_fit = [] #contains the coordinates of the lines in the right lanelines
+    for line in hough_lines:
+        x1,y1,x2,y2 = line.reshape(4)
+        parameters = np.polyfit((x1,x2), (y1,y2), 1)  #this fits first degree polynomial which will be a linear function of y = mx+c and return a vector of points that describe the slopee in y intercepts
+        slope = parameters[0]
+        intercept = parameters[1]
+        if slope < 0:
+            left_fit.append((slope, intercept))
+        else:
+            right_fit.append((slope, intercept))
+    left_fit_average = np.average(left_fit, axis = 0)
+    right_fit_average = np.average(right_fit, axis = 0)
+    left_lane = coordinates(image, left_fit_average)  #CONTAINS MATRIX OF AVERAGE VALUES OF HOUGH TRANSFORM LINES OF LEFT LANE
+    right_lane = coordinates(image, right_fit_average) #CONTAINS MATRIX OF AVERAGE VALUES OF HOUGH TRANSFORM LINES OF LEFT LANE
+    return np.array([left_lane, right_lane])
+
+original_image = cv2.imread('whiteCarLaneSwitch.jpg')
+mask_image = roi()
+hough_lines = cv2.HoughLinesP(mask_image, 2, np.pi/180, 50, np.array([]), minLineLength=20, maxLineGap=5)
+average_lines = average_slope_intercept(hough_lines, original_image)
+lane_lines = display_lanes(average_lines, original_image)
+final_image = cv2.addWeighted(original_image, 0.8, lane_lines, 1, 1)
+cv2.imshow("FINAL IMAGE", final_image)
 cv2.waitKey(0)
