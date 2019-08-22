@@ -2,8 +2,7 @@
 
 Finding Lane lines on the Road
 
-![Image of Lane Line Detection]
-(https://github.com/yogeshgajjar/Lane_Detection/blob/master/test_images/solidWhiteCurve.jpg)
+![Image of Lane Line Detection] (test_images/finalimage.jpg)
 
 ## Overview
 
