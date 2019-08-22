@@ -1,10 +1,13 @@
 # lane_detection
 
-Finding Lane lines on the Road "Then an image"
+Finding Lane lines on the Road
+
+![Image of Lane Line Detection]
+(https://github.com/yogeshgajjar/Lane_Detection/blob/master/test_images/solidWhiteCurve.jpg)
 
 ## Overview
 
-When we drive, we use our eyes and brain to decide where to go. The lane lines acts as a constant reference for where to steer the vehicle. In Autonomous Vehicles, Lane lines detection is essential part of letting the car know that its moving in a desired lane and going straight.
+When we drive, we use our eyes and brain to decide where to go. The lane lines acts as a constant reference for where to steer the vehicle. In Autonomous Vehicles, lane lines detection is essential part of letting the car know about it's desired lane trajectory.
 
 ## Concept
 
@@ -22,7 +25,7 @@ The lane line detection uses two essential concepts i.e Canny Edge Detection and
 
 3. Hough Transform
   - Transform used to detect straight lines.
-  - Uses polar coordinate to detect a point in the space. A straight line joining all the points gives a point in the Hough Transform space. 
+  - Uses polar coordinate to detect a point in the space. A straight line joining all the points gives a point in the Hough Transform space.
   - OpenCV function - cv2.HoughLinesP()
 
 ## Algorithm
