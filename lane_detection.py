@@ -23,7 +23,8 @@ def display_lines(image, lines):
 def region_of_interest(image):
     height = image.shape[0]
     # the command image.shape gives tuples(no of rows, no of column of a image)
-    polygons = np.array([[(200,height), (1100, height), (550, 250)]])
+    #polygons = np.array([[(200,height), (1100, height), (550, 250)]])
+    polygons = np.array([[(140, height), (870, height), (480, 290)]])
     mask = np.zeros_like(image)
     #makes matrix full of zeros with the same dimenstions as of image
     cv2.fillPoly(mask, polygons, 255)
@@ -32,7 +33,7 @@ def region_of_interest(image):
 
 
 
-image = cv2.imread('test_image.jpg')
+image = cv2.imread('solidWhiteCurve.jpg')
 lane_image = np.copy(image)
 #This is needed because any changes made in the arrays of image will lead to changes in the original image. So recommended to always have copy while working with image arrays
 canny = canny(lane_image)
